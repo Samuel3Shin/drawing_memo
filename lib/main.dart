@@ -7,8 +7,18 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-void main() => runApp(CanvasPainting());
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: CanvasPainting(),
+    );
+  }
+}
 
 class CanvasPainting extends StatefulWidget {
   @override
@@ -23,6 +33,8 @@ class _CanvasPaintingState extends State<CanvasPainting> {
   StrokeCap strokeType = StrokeCap.round;
   double strokeWidth = 3.0;
   Color selectedColor = Colors.black;
+
+  void changeColor(Color color) => setState(() => selectedColor = color);
 
   Future<void> _pickStroke() async {
     //Shows AlertDialog
@@ -84,64 +96,16 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     );
   }
 
-  Future<void> _opacity() async {
-    //Shows AlertDialog
-    return showDialog<void>(
-      context: context,
-
-      //Dismiss alert dialog when set true
-      barrierDismissible: true,
-
-      builder: (BuildContext context) {
-        //Clips its child in a oval shape
-        return ClipOval(
-          child: AlertDialog(
-            //Creates three buttons to pick opacity value.
-            actions: <Widget>[
-              FlatButton(
-                child: Icon(
-                  Icons.opacity,
-                  size: 24,
-                ),
-                onPressed: () {
-                  //most transparent
-                  opacity = 0.1;
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Icon(
-                  Icons.opacity,
-                  size: 40,
-                ),
-                onPressed: () {
-                  opacity = 0.5;
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Icon(
-                  Icons.opacity,
-                  size: 60,
-                ),
-                onPressed: () {
-                  //not transparent at all.
-                  opacity = 1.0;
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   _saveScreen() async {
     RenderRepaintBoundary boundary =
         globalKey.currentContext.findRenderObject();
     ui.Image image = await boundary.toImage();
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+    //Request permissions if not already granted
+    if (!(await Permission.storage.status.isGranted))
+      await Permission.storage.request();
+
     final result =
         await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
     print(result);
@@ -167,14 +131,33 @@ class _CanvasPaintingState extends State<CanvasPainting> {
 
   List<Widget> fabOption() {
     return <Widget>[
+      // FloatingActionButton(
+      //   heroTag: "paint_save",
+      //   child: Icon(Icons.save),
+      //   tooltip: 'Save',
+      //   onPressed: () {
+      //     //min: 0, max: 50
+      //     setState(() {
+      //       _saveScreen();
+      //     });
+      //   },
+      // ),
       FloatingActionButton(
-        heroTag: "paint_save",
-        child: Icon(Icons.save),
-        tooltip: 'Save',
+        heroTag: "delete_one_stroke",
+        child: Icon(Icons.delete),
+        tooltip: 'Delete',
         onPressed: () {
           //min: 0, max: 50
           setState(() {
-            _saveScreen();
+            if (points.length == 0) return;
+
+            int pointsIdx = points.length - 1;
+            if (points[pointsIdx] == null) {
+              points.removeAt(pointsIdx--);
+            }
+            while (pointsIdx >= 0 && points[pointsIdx] != null) {
+              points.removeAt(pointsIdx--);
+            }
           });
         },
       ),
@@ -189,17 +172,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           });
         },
       ),
-      FloatingActionButton(
-        heroTag: "paint_opacity",
-        child: Icon(Icons.opacity),
-        tooltip: 'Opacity',
-        onPressed: () {
-          //min:0, max:1
-          setState(() {
-            _opacity();
-          });
-        },
-      ),
+
       FloatingActionButton(
           heroTag: "erase",
           child: Icon(Icons.clear),
@@ -211,46 +184,38 @@ class _CanvasPaintingState extends State<CanvasPainting> {
           }),
       FloatingActionButton(
         backgroundColor: Colors.white,
-        heroTag: "color_red",
-        child: colorMenuItem(Colors.red),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.red;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_green",
-        child: colorMenuItem(Colors.green),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.green;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_pink",
-        child: colorMenuItem(Colors.pink),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.pink;
-          });
-        },
-      ),
-      FloatingActionButton(
-        backgroundColor: Colors.white,
         heroTag: "color_blue",
-        child: colorMenuItem(Colors.blue),
         tooltip: 'Color',
         onPressed: () {
-          setState(() {
-            selectedColor = Colors.blue;
-          });
+          print('색깔 변경 눌렸다');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                titlePadding: const EdgeInsets.all(0.0),
+                contentPadding: const EdgeInsets.all(0.0),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: selectedColor,
+                    onColorChanged: changeColor,
+                    colorPickerWidth: 300.0,
+                    pickerAreaHeightPercent: 0.7,
+                    enableAlpha: false,
+                    displayThumbColor: true,
+                    showLabel: false,
+                    paletteType: PaletteType.hsv,
+                    pickerAreaBorderRadius: const BorderRadius.only(
+                      topLeft: const Radius.circular(2.0),
+                      topRight: const Radius.circular(2.0),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+          // setState(() {
+          //   selectedColor = Colors.blue;
+          // });
         },
       ),
     ];
@@ -346,16 +311,6 @@ class MyPainter extends CustomPainter {
         canvas.drawLine(pointsList[i].points, pointsList[i + 1].points,
             pointsList[i].paint);
       }
-      // else if (pointsList[i] != null && pointsList[i + 1] == null) {
-      //   offsetPoints.clear();
-      //   offsetPoints.add(pointsList[i].points);
-      //   offsetPoints.add(Offset(
-      //       pointsList[i].points.dx + 0.1, pointsList[i].points.dy + 0.1));
-
-      //   //Draw points when two points are not next to each other
-      //   canvas.drawPoints(
-      //       ui.PointMode.points, offsetPoints, pointsList[i].paint);
-      // }
     }
   }
 

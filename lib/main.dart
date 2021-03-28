@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -7,8 +8,18 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
-void main() => runApp(CanvasPainting());
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: CanvasPainting(),
+    );
+  }
+}
 
 class CanvasPainting extends StatefulWidget {
   @override
@@ -16,13 +27,107 @@ class CanvasPainting extends StatefulWidget {
 }
 
 class _CanvasPaintingState extends State<CanvasPainting> {
-  GlobalKey globalKey = GlobalKey();
+  List<Path> _paths = <Path>[];
+  List<Paint> _paint = <Paint>[];
 
-  List<TouchPoints> points = List();
+  Path _path = new Path();
+  bool _repaint = false;
+  int back = 0;
+  double _strokeWidth = 20;
+
+  GlobalKey globalKey = GlobalKey();
+  Color selectedColor = Colors.black;
+
+  _CanvasPaintingState() {
+    _paths = [new Path()];
+
+    Paint paint = new Paint()
+      ..color = selectedColor
+      ..style = PaintingStyle.stroke
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = _strokeWidth;
+    _paint.add(paint);
+  }
+  _panDown(DragDownDetails details) {
+    setState(() {
+      _path = new Path();
+      _paths.add(_path);
+      RenderBox object = context.findRenderObject();
+      Offset _localPosition = object.globalToLocal(details.globalPosition);
+      _paths.last.moveTo(_localPosition.dx - 10, _localPosition.dy - 5);
+      _paths.last.lineTo(_localPosition.dx - 10, _localPosition.dy - 5);
+
+      Paint paint = new Paint()
+        ..color = selectedColor
+        ..style = PaintingStyle.stroke
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = _strokeWidth;
+      _paint.add(paint);
+
+      _repaint = true;
+    });
+  }
+
+  var fingerPostionY = 0.0, fingerPostionX = 0.0;
+  double _distanceBetweenTwoPoints(double x1, double y1, double x2, double y2) {
+    double x = x1 - x2;
+    x = x * x;
+    double y = y1 - y2;
+    y = y * y;
+
+    double result = x + y;
+    return sqrt(result);
+  }
+
+  _panUpdate(DragUpdateDetails details) {
+    RenderBox object = context.findRenderObject();
+    Offset _localPosition = object.globalToLocal(details.globalPosition);
+
+    if (fingerPostionY < 1.0) {
+      // assigen for the first time to compare
+      fingerPostionY = _localPosition.dy;
+      fingerPostionX = _localPosition.dx;
+    } else {
+      // they use a lot of fingers
+      double distance = _distanceBetweenTwoPoints(
+          _localPosition.dx, _localPosition.dy, fingerPostionX, fingerPostionY);
+
+      // the distance between two fingers must be above 50
+      // to disable multi touch
+      if (distance > 100) {
+        return;
+      }
+    }
+
+    // update to use it in comparison
+    fingerPostionY = _localPosition.dy;
+    fingerPostionX = _localPosition.dx;
+
+    setState(() {
+      _paths.last.lineTo(fingerPostionX - 10.0, fingerPostionY - 5.0);
+    });
+  }
+
+  _panEnd(DragEndDetails details) {
+    setState(() {
+      fingerPostionY = 0.0;
+//      _repaint = true;
+    });
+  }
+
+  _boardReset() {
+    setState(() {
+      _path = new Path();
+      _paths = [new Path()];
+      _paint = [new Paint()];
+      _repaint = true;
+    });
+  }
+
   double opacity = 1.0;
   StrokeCap strokeType = StrokeCap.round;
-  double strokeWidth = 3.0;
-  Color selectedColor = Colors.black;
 
   Future<void> _pickStroke() async {
     //Shows AlertDialog
@@ -43,7 +148,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   Icons.clear,
                 ),
                 onPressed: () {
-                  strokeWidth = 3.0;
+                  _strokeWidth = 3.0;
                   Navigator.of(context).pop();
                 },
               ),
@@ -53,7 +158,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   size: 24,
                 ),
                 onPressed: () {
-                  strokeWidth = 10.0;
+                  _strokeWidth = 10.0;
                   Navigator.of(context).pop();
                 },
               ),
@@ -63,7 +168,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   size: 40,
                 ),
                 onPressed: () {
-                  strokeWidth = 30.0;
+                  _strokeWidth = 30.0;
                   Navigator.of(context).pop();
                 },
               ),
@@ -73,7 +178,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
                   size: 60,
                 ),
                 onPressed: () {
-                  strokeWidth = 50.0;
+                  _strokeWidth = 50.0;
                   Navigator.of(context).pop();
                 },
               ),
@@ -137,47 +242,36 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     );
   }
 
+  // Android 에서는 검은 화면만 저장된다. issue 해결해야한다.
+  // 일단 아이폰, 안드로이드 모두에서 뺀다.
   _saveScreen() async {
     RenderRepaintBoundary boundary =
         globalKey.currentContext.findRenderObject();
     ui.Image image = await boundary.toImage();
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+    //Request permissions if not already granted
+    if (!(await Permission.storage.status.isGranted))
+      await Permission.storage.request();
     final result =
         await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
     print(result);
     // _toastInfo(result.toString());
   }
 
-  // Android 에서는 검은 화면만 저장된다. issue 해결해야한다.
-  Future<void> _save() async {
-    RenderRepaintBoundary boundary =
-        globalKey.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-
-    //Request permissions if not already granted
-    if (!(await Permission.storage.status.isGranted))
-      await Permission.storage.request();
-
-    final result =
-        await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
-    print(result);
-  }
-
   List<Widget> fabOption() {
     return <Widget>[
-      FloatingActionButton(
-        heroTag: "paint_save",
-        child: Icon(Icons.save),
-        tooltip: 'Save',
-        onPressed: () {
-          //min: 0, max: 50
-          setState(() {
-            _saveScreen();
-          });
-        },
-      ),
+      // FloatingActionButton(
+      //   heroTag: "paint_save",
+      //   child: Icon(Icons.save),
+      //   tooltip: 'Save',
+      //   onPressed: () {
+      //     //min: 0, max: 50
+      //     setState(() {
+      //       _saveScreen();
+      //     });
+      //   },
+      // ),
       FloatingActionButton(
         heroTag: "paint_stroke",
         child: Icon(Icons.brush),
@@ -202,12 +296,10 @@ class _CanvasPaintingState extends State<CanvasPainting> {
       ),
       FloatingActionButton(
           heroTag: "erase",
-          child: Icon(Icons.clear),
+          child: Icon(Icons.delete),
           tooltip: "Erase",
           onPressed: () {
-            setState(() {
-              points.clear();
-            });
+            _boardReset();
           }),
       FloatingActionButton(
         backgroundColor: Colors.white,
@@ -262,42 +354,21 @@ class _CanvasPaintingState extends State<CanvasPainting> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: GestureDetector(
-          onPanUpdate: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = selectedColor.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
+          onPanDown: (DragDownDetails details) {
+            _panDown(details);
           },
-          onPanStart: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = selectedColor.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
+          onPanUpdate: (DragUpdateDetails details) {
+            _panUpdate(details);
           },
-          onPanEnd: (details) {
-            setState(() {
-              points.add(null);
-            });
+          onPanEnd: (DragEndDetails details) {
+            _panEnd(details);
           },
           child: RepaintBoundary(
             key: globalKey,
             child: CustomPaint(
               size: Size.infinite,
-              painter: MyPainter(
-                pointsList: points,
-              ),
+              painter: new PathPainter(
+                  paths: _paths, repaint: _repaint, paints: _paint),
             ),
           ),
         ),
@@ -330,46 +401,23 @@ class _CanvasPaintingState extends State<CanvasPainting> {
   }
 }
 
-class MyPainter extends CustomPainter {
-  MyPainter({this.pointsList});
-
-  //Keep track of the points tapped on the screen
-  List<TouchPoints> pointsList;
-  List<Offset> offsetPoints = List();
-
-  //This is where we can draw on canvas.
+class PathPainter extends CustomPainter {
+  List<Path> paths;
+  List<Paint> paints;
+  bool repaint;
+  int i = 0;
+  PathPainter({this.paths, this.repaint, this.paints});
   @override
   void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < pointsList.length - 1; i++) {
-      if (pointsList[i] != null && pointsList[i + 1] != null) {
-        //Drawing line when two consecutive points are available
-        canvas.drawLine(pointsList[i].points, pointsList[i + 1].points,
-            pointsList[i].paint);
-      }
-      // else if (pointsList[i] != null && pointsList[i + 1] == null) {
-      //   offsetPoints.clear();
-      //   offsetPoints.add(pointsList[i].points);
-      //   offsetPoints.add(Offset(
-      //       pointsList[i].points.dx + 0.1, pointsList[i].points.dy + 0.1));
+    paths.forEach((path) {
+      canvas.drawPath(path, paints[i]);
+      ++i;
+    });
 
-      //   //Draw points when two points are not next to each other
-      //   canvas.drawPoints(
-      //       ui.PointMode.points, offsetPoints, pointsList[i].paint);
-      // }
-    }
+    i = 0;
+    repaint = false;
   }
 
-  //Called when CustomPainter is rebuilt.
-  //Returning true because we want canvas to be rebuilt to reflect new changes.
   @override
-  bool shouldRepaint(MyPainter oldDelegate) {
-    return true;
-  }
-}
-
-//Class to define a point touched at canvas
-class TouchPoints {
-  Paint paint;
-  Offset points;
-  TouchPoints({this.points, this.paint});
+  bool shouldRepaint(PathPainter oldDelegate) => repaint;
 }

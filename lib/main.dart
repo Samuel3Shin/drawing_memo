@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,7 +34,7 @@ class _CanvasPaintingState extends State<CanvasPainting> {
   Path _path = new Path();
   bool _repaint = false;
   int back = 0;
-  double _strokeWidth = 20;
+  double _strokeWidth = 3;
 
   GlobalKey globalKey = GlobalKey();
   Color selectedColor = Colors.black;

@@ -1,26 +1,14 @@
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: CanvasPainting(),
-    );
-  }
-}
+void main() => runApp(CanvasPainting());
 
 class CanvasPainting extends StatefulWidget {
   @override
@@ -28,194 +16,72 @@ class CanvasPainting extends StatefulWidget {
 }
 
 class _CanvasPaintingState extends State<CanvasPainting> {
-  final globalKey = GlobalKey();
-  List<TouchPoints> points = List();
+  GlobalKey globalKey = GlobalKey();
 
+  List<TouchPoints> points = List();
   double opacity = 1.0;
   StrokeCap strokeType = StrokeCap.round;
   double strokeWidth = 3.0;
   Color selectedColor = Colors.black;
 
-  List<Widget> fabOption() {
-    return <Widget>[
-      FloatingActionButton(
-          heroTag: 'paint_save',
-          child: Icon(Icons.save),
-          tooltip: 'Save',
-          onPressed: () {
-            setState(() {
-              _save();
-            });
-          }),
-      FloatingActionButton(
-        heroTag: "pinat_stroke",
-        child: Icon(Icons.brush),
-        tooltip: 'Stroke',
-        onPressed: () {
-          setState(() {
-            _pickStroke();
-          });
-        },
-      ),
-      FloatingActionButton(
-        heroTag: 'Pinat_opacity',
-        child: Icon(Icons.opacity),
-        tooltip: 'Opacity',
-        onPressed: () {
-          setState(() {
-            _opacity();
-          });
-        },
-      ),
-      FloatingActionButton(
-        heroTag: 'erase',
-        child: Icon(Icons.clear),
-        tooltip: 'Erase',
-        onPressed: () {
-          setState(() {
-            points.clear();
-          });
-        },
-      ),
-      //FAB for picking red color
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_red",
-        child: colorMenuItem(Colors.red),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.red;
-          });
-        },
-      ),
-
-      //FAB for picking green color
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_green",
-        child: colorMenuItem(Colors.green),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.green;
-          });
-        },
-      ),
-
-      //FAB for picking pink color
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_pink",
-        child: colorMenuItem(Colors.pink),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.pink;
-          });
-        },
-      ),
-
-      //FAB for picking blue color
-      FloatingActionButton(
-        backgroundColor: Colors.white,
-        heroTag: "color_blue",
-        child: colorMenuItem(Colors.blue),
-        tooltip: 'Color',
-        onPressed: () {
-          setState(() {
-            selectedColor = Colors.blue;
-          });
-        },
-      ),
-    ];
-  }
-
-  //TODO: _save 기능에 버그가 있다...
-  // globalKey.currentContext 가 Null 인 것이 문제이다.
-
-  Future<void> _save() async {
-    print('1');
-    print(globalKey);
-    print(globalKey.currentContext);
-    print(globalKey.currentWidget);
-    print(globalKey.currentState);
-    RenderRepaintBoundary boundary =
-        globalKey.currentContext.findRenderObject();
-    print('2');
-    ui.Image image = await boundary.toImage();
-    print('3');
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    print('4');
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    print('5');
-
-    if (!(await Permission.storage.status.isGranted)) {
-      print('6');
-      await Permission.storage.request();
-    }
-    print('7');
-
-    final result = await ImageGallerySaver.saveImage(
-        Uint8List.fromList(pngBytes),
-        quality: 100,
-        name: 'canvas_image');
-    print('8');
-    print(result);
-  }
-
   Future<void> _pickStroke() async {
+    //Shows AlertDialog
     return showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext context) {
-          return ClipOval(
-            child: AlertDialog(
-              actions: <Widget>[
-                //Resetting to default stroke value
-                FlatButton(
-                  child: Icon(
-                    Icons.clear,
-                  ),
-                  onPressed: () {
-                    strokeWidth = 3.0;
-                    Navigator.of(context).pop();
-                  },
+      context: context,
+
+      //Dismiss alert dialog when set true
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        //Clips its child in a oval shape
+        return ClipOval(
+          child: AlertDialog(
+            //Creates three buttons to pick stroke value.
+            actions: <Widget>[
+              //Resetting to default stroke value
+              FlatButton(
+                child: Icon(
+                  Icons.clear,
                 ),
-                FlatButton(
-                  child: Icon(
-                    Icons.brush,
-                    size: 24,
-                  ),
-                  onPressed: () {
-                    strokeWidth = 10.0;
-                    Navigator.of(context).pop();
-                  },
+                onPressed: () {
+                  strokeWidth = 3.0;
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Icon(
+                  Icons.brush,
+                  size: 24,
                 ),
-                FlatButton(
-                  child: Icon(
-                    Icons.brush,
-                    size: 40,
-                  ),
-                  onPressed: () {
-                    strokeWidth = 30.0;
-                    Navigator.of(context).pop();
-                  },
+                onPressed: () {
+                  strokeWidth = 10.0;
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Icon(
+                  Icons.brush,
+                  size: 40,
                 ),
-                FlatButton(
-                  child: Icon(
-                    Icons.brush,
-                    size: 60,
-                  ),
-                  onPressed: () {
-                    strokeWidth = 50.0;
-                    Navigator.of(context).pop();
-                  },
+                onPressed: () {
+                  strokeWidth = 30.0;
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Icon(
+                  Icons.brush,
+                  size: 60,
                 ),
-              ],
-            ),
-          );
-        });
+                onPressed: () {
+                  strokeWidth = 50.0;
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _opacity() async {
@@ -271,6 +137,180 @@ class _CanvasPaintingState extends State<CanvasPainting> {
     );
   }
 
+  _saveScreen() async {
+    RenderRepaintBoundary boundary =
+        globalKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final result =
+        await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+    print(result);
+    // _toastInfo(result.toString());
+  }
+
+  // Android 에서는 검은 화면만 저장된다. issue 해결해야한다.
+  Future<void> _save() async {
+    RenderRepaintBoundary boundary =
+        globalKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData.buffer.asUint8List();
+
+    //Request permissions if not already granted
+    if (!(await Permission.storage.status.isGranted))
+      await Permission.storage.request();
+
+    final result =
+        await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+    print(result);
+  }
+
+  List<Widget> fabOption() {
+    return <Widget>[
+      FloatingActionButton(
+        heroTag: "paint_save",
+        child: Icon(Icons.save),
+        tooltip: 'Save',
+        onPressed: () {
+          //min: 0, max: 50
+          setState(() {
+            _saveScreen();
+          });
+        },
+      ),
+      FloatingActionButton(
+        heroTag: "paint_stroke",
+        child: Icon(Icons.brush),
+        tooltip: 'Stroke',
+        onPressed: () {
+          //min: 0, max: 50
+          setState(() {
+            _pickStroke();
+          });
+        },
+      ),
+      FloatingActionButton(
+        heroTag: "paint_opacity",
+        child: Icon(Icons.opacity),
+        tooltip: 'Opacity',
+        onPressed: () {
+          //min:0, max:1
+          setState(() {
+            _opacity();
+          });
+        },
+      ),
+      FloatingActionButton(
+          heroTag: "erase",
+          child: Icon(Icons.clear),
+          tooltip: "Erase",
+          onPressed: () {
+            setState(() {
+              points.clear();
+            });
+          }),
+      FloatingActionButton(
+        backgroundColor: Colors.white,
+        heroTag: "color_red",
+        child: colorMenuItem(Colors.red),
+        tooltip: 'Color',
+        onPressed: () {
+          setState(() {
+            selectedColor = Colors.red;
+          });
+        },
+      ),
+      FloatingActionButton(
+        backgroundColor: Colors.white,
+        heroTag: "color_green",
+        child: colorMenuItem(Colors.green),
+        tooltip: 'Color',
+        onPressed: () {
+          setState(() {
+            selectedColor = Colors.green;
+          });
+        },
+      ),
+      FloatingActionButton(
+        backgroundColor: Colors.white,
+        heroTag: "color_pink",
+        child: colorMenuItem(Colors.pink),
+        tooltip: 'Color',
+        onPressed: () {
+          setState(() {
+            selectedColor = Colors.pink;
+          });
+        },
+      ),
+      FloatingActionButton(
+        backgroundColor: Colors.white,
+        heroTag: "color_blue",
+        child: colorMenuItem(Colors.blue),
+        tooltip: 'Color',
+        onPressed: () {
+          setState(() {
+            selectedColor = Colors.blue;
+          });
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: GestureDetector(
+          onPanUpdate: (details) {
+            setState(() {
+              RenderBox renderBox = context.findRenderObject();
+              points.add(TouchPoints(
+                  points: renderBox.globalToLocal(details.globalPosition),
+                  paint: Paint()
+                    ..strokeCap = strokeType
+                    ..isAntiAlias = true
+                    ..color = selectedColor.withOpacity(opacity)
+                    ..strokeWidth = strokeWidth));
+            });
+          },
+          onPanStart: (details) {
+            setState(() {
+              RenderBox renderBox = context.findRenderObject();
+              points.add(TouchPoints(
+                  points: renderBox.globalToLocal(details.globalPosition),
+                  paint: Paint()
+                    ..strokeCap = strokeType
+                    ..isAntiAlias = true
+                    ..color = selectedColor.withOpacity(opacity)
+                    ..strokeWidth = strokeWidth));
+            });
+          },
+          onPanEnd: (details) {
+            setState(() {
+              points.add(null);
+            });
+          },
+          child: RepaintBoundary(
+            key: globalKey,
+            child: CustomPaint(
+              size: Size.infinite,
+              painter: MyPainter(
+                pointsList: points,
+              ),
+            ),
+          ),
+        ),
+        floatingActionButton: AnimatedFloatingActionButton(
+          fabButtons: fabOption(),
+          colorStartAnimation: Colors.blue,
+          colorEndAnimation: Colors.cyan,
+          animatedIconData: AnimatedIcons.menu_close,
+        ),
+      ),
+    );
+  }
+
   Widget colorMenuItem(Color color) {
     return GestureDetector(
       onTap: () {
@@ -288,99 +328,48 @@ class _CanvasPaintingState extends State<CanvasPainting> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: GestureDetector(
-          onPanStart: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = selectedColor.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
-          },
-          onPanUpdate: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = selectedColor.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
-          },
-          onPanEnd: (details) {
-            setState(() {
-              points.add(null);
-            });
-          },
-          child: Stack(
-            children: <Widget>[
-              Center(
-                  // child: Image.asset("assets/images/hut.png"),
-                  ),
-              CustomPaint(
-                size: Size.infinite,
-                painter: MyPainter(
-                  pointsList: points,
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: AnimatedFloatingActionButton(
-          fabButtons: fabOption(),
-          colorStartAnimation: Colors.blue,
-          colorEndAnimation: Colors.cyan,
-          animatedIconData: AnimatedIcons.menu_close,
-        ),
-      ),
-    );
-  }
-}
-
-class TouchPoints {
-  Paint paint;
-  Offset points;
-  TouchPoints({this.points, this.paint});
 }
 
 class MyPainter extends CustomPainter {
   MyPainter({this.pointsList});
 
+  //Keep track of the points tapped on the screen
   List<TouchPoints> pointsList;
   List<Offset> offsetPoints = List();
 
+  //This is where we can draw on canvas.
   @override
   void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < pointsList.length - 1; ++i) {
+    for (int i = 0; i < pointsList.length - 1; i++) {
       if (pointsList[i] != null && pointsList[i + 1] != null) {
+        //Drawing line when two consecutive points are available
         canvas.drawLine(pointsList[i].points, pointsList[i + 1].points,
             pointsList[i].paint);
-      } else if (pointsList[i] != null && pointsList[i + 1] == null) {
-        offsetPoints.clear();
-        offsetPoints.add(pointsList[i].points);
-        offsetPoints.add(Offset(
-            pointsList[i].points.dx + 0.1, pointsList[i].points.dy + 0.1));
-
-        canvas.drawPoints(
-            ui.PointMode.points, offsetPoints, pointsList[i].paint);
       }
+      // else if (pointsList[i] != null && pointsList[i + 1] == null) {
+      //   offsetPoints.clear();
+      //   offsetPoints.add(pointsList[i].points);
+      //   offsetPoints.add(Offset(
+      //       pointsList[i].points.dx + 0.1, pointsList[i].points.dy + 0.1));
+
+      //   //Draw points when two points are not next to each other
+      //   canvas.drawPoints(
+      //       ui.PointMode.points, offsetPoints, pointsList[i].paint);
+      // }
     }
   }
 
+  //Called when CustomPainter is rebuilt.
+  //Returning true because we want canvas to be rebuilt to reflect new changes.
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(MyPainter oldDelegate) {
     return true;
   }
+}
+
+//Class to define a point touched at canvas
+class TouchPoints {
+  Paint paint;
+  Offset points;
+  TouchPoints({this.points, this.paint});
 }

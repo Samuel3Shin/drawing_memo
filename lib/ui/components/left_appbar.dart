@@ -41,14 +41,14 @@ class _TopAppBarState extends State<TopAppBar> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
+            Expanded(
               child: Column(
                 children: [
                   PenProperties(),
                   BackGroundColorButton(bgColorProvider: _bgColorProvider),
                   // ShapeInsertButton(),
                   EraserButton(),
-                  TextInsertButton(),
+                  // TextInsertButton(),
                   PopupMenuButton<String>(
                     color: popupMenuColor,
                     tooltip: 'Sheet View',

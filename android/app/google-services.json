@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "390282916619",
+    "project_id": "drawing-memo-1b2e0",
+    "storage_bucket": "drawing-memo-1b2e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390282916619:android:6c13a8869f990bef1a680e",
+        "android_client_info": {
+          "package_name": "com.ssmegentle.drawing_memo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390282916619-t3mnodqvtjiua8l2hqblck44cf1mhamo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1gG4O-Ie-KHTmmiufY4dyt5l0WJi-F34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390282916619-t3mnodqvtjiua8l2hqblck44cf1mhamo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "390282916619-r0q5l351eqm2udbol9k5fn8bhobiaq4j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ssmegentle.drawingMemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

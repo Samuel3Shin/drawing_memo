@@ -17,31 +17,20 @@ class _RightBarState extends State<RightBar> {
   void undo() async {
     try {
       int c = 0;
-      Scaffold.of(context).setState(() {
-        for (int k = 0; k < points.length; k++) {
-          if (points[k] == null) {
-            c++;
-            if (c == 2) break;
+      Scaffold.of(context).setState(
+        () {
+          int i;
+          if (points.length == 0) return;
+          for (i = points.length - 2; i >= 0; --i) {
+            if (points[i] == null) break;
           }
-        }
-        if (c == 1)
-          points.clear();
-        else {
-          revPoints = points.reversed.toList();
-          int i, count = 0;
-          for (i = 0; i < revPoints.length; i++) {
-            if (revPoints[i] == null) {
-              count++;
-              if (count == 2) break;
-            }
-          }
-          for (int k = points.length - i - 1; k < points.length; k++) {
+          for (int k = i + 1; k < points.length; ++k) {
             deletedPoints.add(points[k]);
+            print('DEBUG::${points[k]}');
           }
-
-          points.removeRange(points.length - i - 1, points.length - 1);
-        }
-      });
+          points.removeRange(i + 1, points.length);
+        },
+      );
     } catch (e) {
       await Fluttertoast.showToast(msg: e.toString());
     }
@@ -51,36 +40,17 @@ class _RightBarState extends State<RightBar> {
     try {
       Scaffold.of(context).setState(
         () {
-          int c = 0;
-          for (int k = 0; k < points.length; k++) {
-            if (points[k] == null) {
-              c++;
-              if (c == 2) break;
-            }
-          }
-          if (c == 1)
-            for (int i = 0; i < deletedPoints.length; i++) {
-              points.add(deletedPoints[i]);
-            }
-          else {
-            int count = 0, i;
-            revPoints = deletedPoints.reversed.toList();
-            for (i = 0; i < revPoints.length; i++) {
-              if (revPoints[i] == null) {
-                count++;
-              }
-              if (count == 2) break;
-            }
-            for (int j = deletedPoints.length - i - 1;
-                j < deletedPoints.length;
-                j++) {
-              points.add(deletedPoints[j]);
-            }
+          int i;
+          if (deletedPoints.length == 0) return;
 
-            deletedPoints.removeRange(
-                deletedPoints.length - i - 1, deletedPoints.length - 1);
+          for (i = deletedPoints.length - 2; i >= 0; --i) {
+            if (deletedPoints[i] == null) break;
           }
-          revPoints.clear();
+          for (int k = i + 1; k < deletedPoints.length; ++k) {
+            points.add(deletedPoints[k]);
+            print('DEBUG::${deletedPoints[k]}');
+          }
+          deletedPoints.removeRange(i + 1, deletedPoints.length);
         },
       );
       print(points.toList());
@@ -101,12 +71,12 @@ class _RightBarState extends State<RightBar> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Consumer<SheetNumberProvider>(
-              builder: (context, nsheetProv, child) => TextButton(
-                onPressed: () {},
-                child: Text('${nsheetProv.sheetNumber + 1}'),
-              ),
-            ),
+            // Consumer<SheetNumberProvider>(
+            //   builder: (context, nsheetProv, child) => TextButton(
+            //     onPressed: () {},
+            //     child: Text('${nsheetProv.sheetNumber + 1}'),
+            //   ),
+            // ),
             IconButton(
               icon: Icon(
                 FontAwesomeIcons.undo,

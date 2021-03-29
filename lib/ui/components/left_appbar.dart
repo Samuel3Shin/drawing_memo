@@ -45,52 +45,52 @@ class _TopAppBarState extends State<TopAppBar> {
               child: Column(
                 children: [
                   PenProperties(),
-                  BackGroundColorButton(bgColorProvider: _bgColorProvider),
+                  // BackGroundColorButton(bgColorProvider: _bgColorProvider),
                   // ShapeInsertButton(),
                   EraserButton(),
                   // TextInsertButton(),
-                  PopupMenuButton<String>(
-                    color: popupMenuColor,
-                    tooltip: 'Sheet View',
-                    icon: Icon(
-                      Icons.add,
-                      color: iconColor,
-                      size: iconSize + 7,
-                    ),
-                    onSelected: (String value) {},
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      PopupMenuItem<String>(
-                        value: 'normalpaper',
-                        child: ListTile(
-                          title: Text(
-                            'Normal',
-                            style: popupTextStyle,
-                          ),
-                          onTap: () {
-                            createNewFunction(false);
-                          },
-                        ),
-                      ),
-                      PopupMenuDivider(),
-                      PopupMenuItem<String>(
-                        value: 'gridpaper',
-                        child: ListTile(
-                          title: Text(
-                            'Grid Paper',
-                            style: popupTextStyle,
-                          ),
-                          onTap: () {
-                            createNewFunction(true);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  // PopupMenuButton<String>(
+                  //   color: popupMenuColor,
+                  //   tooltip: 'Sheet View',
+                  //   icon: Icon(
+                  //     Icons.add,
+                  //     color: iconColor,
+                  //     size: iconSize + 7,
+                  //   ),
+                  //   onSelected: (String value) {},
+                  //   itemBuilder: (BuildContext context) =>
+                  //       <PopupMenuEntry<String>>[
+                  //     PopupMenuItem<String>(
+                  //       value: 'normalpaper',
+                  //       child: ListTile(
+                  //         title: Text(
+                  //           'Normal',
+                  //           style: popupTextStyle,
+                  //         ),
+                  //         onTap: () {
+                  //           createNewFunction(false);
+                  //         },
+                  //       ),
+                  //     ),
+                  //     PopupMenuDivider(),
+                  //     PopupMenuItem<String>(
+                  //       value: 'gridpaper',
+                  //       child: ListTile(
+                  //         title: Text(
+                  //           'Grid Paper',
+                  //           style: popupTextStyle,
+                  //         ),
+                  //         onTap: () {
+                  //           createNewFunction(true);
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
-            BottomLeftBar(),
+            // BottomLeftBar(),
           ],
         ),
       ),

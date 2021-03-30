@@ -42,69 +42,6 @@ class PenProperties extends StatelessWidget {
               'Pen',
               style: popupTextStyle,
             ),
-            trailing: PopupMenuButton<String>(
-              color: popupMenuColor,
-              tooltip: 'penstroke',
-              icon: Icon(
-                Icons.more_vert,
-                color: popupTextStyle.color,
-              ),
-              onSelected: (String value) {},
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'roundstroke',
-                  child: ListTile(
-                    tileColor: popupMenuColor,
-                    title: Text(
-                      'Round',
-                      style: popupTextStyle,
-                    ),
-                    onTap: () {
-                      eraserToPen();
-
-                      strokeCap = StrokeCap.round;
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-                PopupMenuDivider(),
-                PopupMenuItem<String>(
-                  value: 'buttstroke',
-                  child: ListTile(
-                    tileColor: popupMenuColor,
-                    title: Text(
-                      'Butt',
-                      style: popupTextStyle,
-                    ),
-                    onTap: () {
-                      eraserToPen();
-                      strokeCap = StrokeCap.butt;
-                      brushWidth = 3.0;
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-                PopupMenuDivider(),
-                PopupMenuItem<String>(
-                  value: 'squarestroke',
-                  child: ListTile(
-                    tileColor: popupMenuColor,
-                    title: Text(
-                      'Sqaure',
-                      style: popupTextStyle,
-                    ),
-                    onTap: () {
-                      eraserToPen();
-                      strokeCap = StrokeCap.square;
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
         PopupMenuDivider(),

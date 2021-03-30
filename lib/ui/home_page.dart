@@ -6,7 +6,6 @@ import 'package:drawing_memo/providers/sheets_provider.dart';
 import 'package:drawing_memo/ui/constants/constants.dart';
 import 'package:drawing_memo/ui/painters/draw.dart';
 import 'package:drawing_memo/ui/components/left_appbar.dart';
-import 'package:drawing_memo/ui/components/right_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -150,10 +149,6 @@ class _DrawScreenState extends State<DrawScreen> {
                 },
               ),
               TopAppBar(),
-              Positioned(
-                right: 0.0,
-                child: RightBar(),
-              ),
             ],
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class SheetsViewProvider extends ChangeNotifier {
-  bool _isGrid = true;
+  bool _isGrid = false;
   bool get isGrid => _isGrid;
   set isGrid(bool val) {
     _isGrid = val;

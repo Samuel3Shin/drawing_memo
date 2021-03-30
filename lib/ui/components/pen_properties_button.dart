@@ -25,7 +25,7 @@ class PenProperties extends StatelessWidget {
       color: popupMenuColor,
       icon: Icon(
         FontAwesomeIcons.pen,
-        color: brushColor,
+        color: Colors.white,
         size: iconSize,
       ),
       onSelected: (String value) {},
@@ -80,7 +80,7 @@ class PenProperties extends StatelessWidget {
                     onTap: () {
                       eraserToPen();
                       strokeCap = StrokeCap.butt;
-                      brushWidth = 15;
+                      brushWidth = 3.0;
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
@@ -152,7 +152,7 @@ class PenProperties extends StatelessWidget {
               children: [
                 Slider(
                   value: brushWidth,
-                  min: 4,
+                  min: 3,
                   max: 40,
                   label: '$brushWidth',
                   onChanged: (value) {},

@@ -1,11 +1,8 @@
 import 'package:drawing_memo/providers/bg_color_provider.dart';
 import 'package:drawing_memo/providers/eraser_provider.dart';
 import 'package:drawing_memo/providers/sheets_provider.dart';
-import 'package:drawing_memo/ui/components/background_color_button.dart';
-import 'package:drawing_memo/ui/components/bottom_left_bar.dart';
 import 'package:drawing_memo/ui/components/eraser_button.dart';
 import 'package:drawing_memo/ui/components/pen_properties_button.dart';
-import 'package:drawing_memo/ui/components/text_insert_button.dart';
 import 'package:drawing_memo/ui/constants/constants.dart';
 import 'package:drawing_memo/ui/styles/icon_styles.dart';
 import 'package:drawing_memo/ui/styles/popup_styles.dart';
@@ -46,51 +43,48 @@ class _TopAppBarState extends State<TopAppBar> {
                 children: [
                   PenProperties(),
                   // BackGroundColorButton(bgColorProvider: _bgColorProvider),
-                  // ShapeInsertButton(),
                   EraserButton(),
-                  // TextInsertButton(),
-                  // PopupMenuButton<String>(
-                  //   color: popupMenuColor,
-                  //   tooltip: 'Sheet View',
-                  //   icon: Icon(
-                  //     Icons.add,
-                  //     color: iconColor,
-                  //     size: iconSize + 7,
-                  //   ),
-                  //   onSelected: (String value) {},
-                  //   itemBuilder: (BuildContext context) =>
-                  //       <PopupMenuEntry<String>>[
-                  //     PopupMenuItem<String>(
-                  //       value: 'normalpaper',
-                  //       child: ListTile(
-                  //         title: Text(
-                  //           'Normal',
-                  //           style: popupTextStyle,
-                  //         ),
-                  //         onTap: () {
-                  //           createNewFunction(false);
-                  //         },
-                  //       ),
-                  //     ),
-                  //     PopupMenuDivider(),
-                  //     PopupMenuItem<String>(
-                  //       value: 'gridpaper',
-                  //       child: ListTile(
-                  //         title: Text(
-                  //           'Grid Paper',
-                  //           style: popupTextStyle,
-                  //         ),
-                  //         onTap: () {
-                  //           createNewFunction(true);
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  PopupMenuButton<String>(
+                    color: popupMenuColor,
+                    tooltip: 'Sheet View',
+                    icon: Icon(
+                      Icons.add,
+                      color: iconColor,
+                      size: iconSize + 7,
+                    ),
+                    onSelected: (String value) {},
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<String>>[
+                      PopupMenuItem<String>(
+                        value: 'normalpaper',
+                        child: ListTile(
+                          title: Text(
+                            'Normal',
+                            style: popupTextStyle,
+                          ),
+                          onTap: () {
+                            createNewFunction(false);
+                          },
+                        ),
+                      ),
+                      PopupMenuDivider(),
+                      PopupMenuItem<String>(
+                        value: 'gridpaper',
+                        child: ListTile(
+                          title: Text(
+                            'Grid Paper',
+                            style: popupTextStyle,
+                          ),
+                          onTap: () {
+                            createNewFunction(true);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            // BottomLeftBar(),
           ],
         ),
       ),

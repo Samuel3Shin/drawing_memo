@@ -43,8 +43,13 @@ class _PenPropertiesState extends State<PenProperties> {
         PopupMenuItem<String>(
           value: 'pentype',
           child: ListTile(
+            leading: Icon(
+              FontAwesomeIcons.pen,
+              color: popupTextStyle.color,
+              size: iconSize,
+            ),
             onTap: () {
-              eraserToPen();
+              _eraserProv.isEraser = false;
               Navigator.of(context).pop();
             },
             tileColor: popupMenuColor,
@@ -64,7 +69,7 @@ class _PenPropertiesState extends State<PenProperties> {
               color: brushColor,
             ),
             title: Text(
-              'Colors',
+              'Color Selection',
               style: popupTextStyle,
             ),
             onTap: () {
@@ -72,9 +77,9 @@ class _PenPropertiesState extends State<PenProperties> {
                 context: context,
                 builder: (_) {
                   return AlertDialog(
-                    contentPadding: const EdgeInsets.all(6.0),
+                    contentPadding: const EdgeInsets.all(3.0),
                     title: Text(
-                      "Full Material Color picker",
+                      "Color Selection",
                     ),
                     content: MaterialColorPicker(
                       colors: fullMaterialColors,

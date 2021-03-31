@@ -10,4 +10,4 @@ Color brushColor = Colors.black;
 Color bgColor = Colors.white;
 int count = 0;
 StrokeCap strokeCap = StrokeCap.round;
-double eraserWidth = 30.0;
+double eraserWidth = 22.0;

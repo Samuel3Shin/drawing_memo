@@ -24,35 +24,39 @@ class _DrawScreenState extends State<DrawScreen> {
               Consumer<SheetNumberProvider>(
                 builder: (context, sheetNProv, child) {
                   return Consumer<EraserProvider>(
-                    builder: (context, eraseProv, child) => MouseRegion(
-                      cursor: eraseProv.isEraser
-                          ? SystemMouseCursors.disappearing
-                          : SystemMouseCursors.basic,
-                      child: GestureDetector(
-                        onPanUpdate: (DragUpdateDetails details) {
-                          setState(
-                            () {
-                              RenderBox object = context.findRenderObject();
-                              Offset _localPosition =
-                                  object.globalToLocal(details.globalPosition);
-                              PenStroke _localPoint = PenStroke();
-                              _localPoint.color =
-                                  eraseProv.isEraser ? bgColor : brushColor;
-                              _localPoint.offset = _localPosition;
-                              _localPoint.brushWidth =
-                                  eraseProv.isEraser ? eraserWidth : brushWidth;
-                              _localPoint.strokeCap = strokeCap;
-                              points = List.from(points)..add(_localPoint);
-                            },
-                          );
-                        },
-                        onPanEnd: (DragEndDetails details) => {
-                          deletedPoints.clear(),
-                          points.add(null),
-                        },
-                        child: CustomPaint(
-                          painter: DrawPen(points: points),
-                          size: Size.infinite,
+                    builder: (context, eraseProv, child) => Container(
+                      color: bgColor,
+                      child: MouseRegion(
+                        cursor: eraseProv.isEraser
+                            ? SystemMouseCursors.disappearing
+                            : SystemMouseCursors.basic,
+                        child: GestureDetector(
+                          onPanUpdate: (DragUpdateDetails details) {
+                            setState(
+                              () {
+                                RenderBox object = context.findRenderObject();
+                                Offset _localPosition = object
+                                    .globalToLocal(details.globalPosition);
+                                PenStroke _localPoint = PenStroke();
+                                _localPoint.color =
+                                    eraseProv.isEraser ? bgColor : brushColor;
+                                _localPoint.offset = _localPosition;
+                                _localPoint.brushWidth = eraseProv.isEraser
+                                    ? eraserWidth
+                                    : brushWidth;
+                                _localPoint.strokeCap = strokeCap;
+                                points = List.from(points)..add(_localPoint);
+                              },
+                            );
+                          },
+                          onPanEnd: (DragEndDetails details) => {
+                            deletedPoints.clear(),
+                            points.add(null),
+                          },
+                          child: CustomPaint(
+                            painter: DrawPen(points: points),
+                            size: Size.infinite,
+                          ),
                         ),
                       ),
                     ),

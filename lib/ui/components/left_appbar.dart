@@ -7,6 +7,9 @@ import 'package:drawing_memo/ui/components/pen_properties_button.dart';
 import 'package:drawing_memo/providers/sheetnumber_provider.dart';
 import 'package:drawing_memo/ui/constants/constants.dart';
 import 'package:drawing_memo/ui/styles/icon_styles.dart';
+import 'package:drawing_memo/providers/eraser_provider.dart';
+
+//TODO: sheet number 바꾸는 거 제대로 구현하면 작은 폰 이용자들이 많은 sheet를 위 아래로 이동하면서 이용할 수 있으니까 좋을듯!
 
 class LeftAppBar extends StatefulWidget {
   @override
@@ -52,6 +55,7 @@ class _LeftAppBarState extends State<LeftAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    var _eraserProv = Provider.of<EraserProvider>(context, listen: false);
     // var sheetnProv = Provider.of<SheetNumberProvider>(context, listen: false);
     return Builder(
       builder: (BuildContext context) => Container(
@@ -84,15 +88,19 @@ class _LeftAppBarState extends State<LeftAppBar> {
                   ),
                   IconButton(
                     icon: Icon(
-                      Icons.cancel_outlined,
+                      FontAwesomeIcons.trashAlt,
                       color: iconColor,
                       size: iconSize,
                     ),
                     onPressed: () {
                       Scaffold.of(context).setState(() {
+                        for (int k = 0; k < points.length; ++k) {
+                          deletedPoints.add(points[k]);
+                          print('DEBUG::${points[k]}');
+                        }
+                        // deletedPoints = points;
                         points.clear();
-
-                        deletedPoints.clear();
+                        // deletedPoints.clear();
                       });
                     },
                   ),

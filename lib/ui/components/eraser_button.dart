@@ -22,6 +22,9 @@ class EraserButton extends StatelessWidget {
         color: iconColor,
         size: iconSize,
       ),
+      onCanceled: () {
+        _eraserProv.isEraser = true;
+      },
       onSelected: (String value) {},
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
@@ -34,7 +37,6 @@ class EraserButton extends StatelessWidget {
             ),
             onTap: () {
               _eraserProv.isEraser = true;
-              eraserWidth = 30.0;
               Navigator.of(context).pop();
             },
             tileColor: popupMenuColor,
@@ -53,7 +55,7 @@ class EraserButton extends StatelessWidget {
               children: [
                 Slider(
                   value: eraserWidth,
-                  min: 4,
+                  min: 3,
                   max: 40,
                   label: '$eraserWidth',
                   onChanged: (value) {

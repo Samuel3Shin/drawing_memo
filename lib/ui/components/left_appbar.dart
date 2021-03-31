@@ -1,18 +1,19 @@
-import 'package:drawing_memo/ui/components/eraser_button.dart';
-import 'package:drawing_memo/ui/components/pen_properties_button.dart';
 import 'package:flutter/material.dart';
-
-import 'package:drawing_memo/ui/constants/constants.dart';
-import 'package:drawing_memo/ui/styles/icon_styles.dart';
-import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class TopAppBar extends StatefulWidget {
+import 'package:drawing_memo/ui/components/eraser_button.dart';
+import 'package:drawing_memo/ui/components/pen_properties_button.dart';
+import 'package:drawing_memo/providers/sheetnumber_provider.dart';
+import 'package:drawing_memo/ui/constants/constants.dart';
+import 'package:drawing_memo/ui/styles/icon_styles.dart';
+
+class LeftAppBar extends StatefulWidget {
   @override
-  _TopAppBarState createState() => _TopAppBarState();
+  _LeftAppBarState createState() => _LeftAppBarState();
 }
 
-class _TopAppBarState extends State<TopAppBar> {
+class _LeftAppBarState extends State<LeftAppBar> {
   void undo() async {
     Scaffold.of(context).setState(
       () {
@@ -51,6 +52,7 @@ class _TopAppBarState extends State<TopAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    // var sheetnProv = Provider.of<SheetNumberProvider>(context, listen: false);
     return Builder(
       builder: (BuildContext context) => Container(
         color: Colors.black,
@@ -89,11 +91,37 @@ class _TopAppBarState extends State<TopAppBar> {
                     onPressed: () {
                       Scaffold.of(context).setState(() {
                         points.clear();
-                        revPoints.clear();
+
                         deletedPoints.clear();
                       });
                     },
                   ),
+                  // IconButton(
+                  //   padding: EdgeInsets.all(8),
+                  //   icon: Icon(
+                  //     FontAwesomeIcons.arrowUp,
+                  //     color: iconColor,
+                  //     size: iconSize,
+                  //   ),
+                  //   onPressed: () {
+                  //     int n = sheetnProv.sheetNumber;
+                  //     sheetnProv.sheetNumber = --n;
+                  //     print('BOTTOM APPBAR: $n');
+                  //   },
+                  // ),
+                  // IconButton(
+                  //   padding: EdgeInsets.all(8),
+                  //   icon: Icon(
+                  //     FontAwesomeIcons.arrowDown,
+                  //     color: iconColor,
+                  //     size: iconSize,
+                  //   ),
+                  //   onPressed: () {
+                  //     int n = sheetnProv.sheetNumber;
+                  //     sheetnProv.sheetNumber = ++n;
+                  //     print('BOTTOM APPBAR: $n');
+                  //   },
+                  // ),
                 ],
               ),
             ),

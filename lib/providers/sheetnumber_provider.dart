@@ -12,12 +12,10 @@ class SheetNumberProvider extends ChangeNotifier {
         try {
           SheetsModel _sheetsModel = SheetsModel();
           _sheetsModel.points = points;
-          _sheetsModel.revPoints = revPoints;
           _sheetsModel.deletedPoints = deletedPoints;
           sheets.add(_sheetsModel);
           SheetsModel _smodel = sheets[sheets.length - 2];
           points = _smodel.points;
-          revPoints = _smodel.revPoints;
           deletedPoints = _smodel.deletedPoints;
           _sheetNumber = val;
           notifyListeners();
@@ -29,11 +27,9 @@ class SheetNumberProvider extends ChangeNotifier {
         try {
           SheetsModel _sheetsmodel = sheets[_sheetNumber];
           _sheetsmodel.points = points;
-          _sheetsmodel.revPoints = revPoints;
           _sheetsmodel.deletedPoints = deletedPoints;
           SheetsModel _smodel = sheets[_sheetNumber - 1];
           points = _smodel.points;
-          revPoints = _smodel.revPoints;
           deletedPoints = _smodel.deletedPoints;
           _sheetNumber = val;
           notifyListeners();
@@ -47,11 +43,9 @@ class SheetNumberProvider extends ChangeNotifier {
         try {
           SheetsModel _sheetsModel = SheetsModel();
           _sheetsModel.points = points;
-          _sheetsModel.revPoints = revPoints;
           _sheetsModel.deletedPoints = deletedPoints;
           sheets.add(_sheetsModel);
           points = [];
-          revPoints = [];
           deletedPoints = [];
           _sheetNumber = val;
           notifyListeners();
@@ -62,11 +56,9 @@ class SheetNumberProvider extends ChangeNotifier {
         try {
           SheetsModel _smodel = sheets[_sheetNumber];
           _smodel.points = points;
-          _smodel.revPoints = revPoints;
           _smodel.deletedPoints = deletedPoints;
           SheetsModel _sheetsmodel = sheets[val];
           points = _sheetsmodel.points;
-          revPoints = _sheetsmodel.revPoints;
           deletedPoints = _sheetsmodel.deletedPoints;
           _sheetNumber = val;
           notifyListeners();

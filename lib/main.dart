@@ -1,8 +1,6 @@
-import 'package:drawing_memo/providers/bg_color_provider.dart';
 import 'package:drawing_memo/providers/eraser_provider.dart';
 import 'package:drawing_memo/providers/pen_type_provider.dart';
 import 'package:drawing_memo/providers/sheetnumber_provider.dart';
-import 'package:drawing_memo/providers/sheets_provider.dart';
 import 'package:drawing_memo/ui/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,12 +26,6 @@ class MainApp extends StatelessWidget {
       ) {
         return MultiProvider(
           providers: [
-            ChangeNotifierProvider.value(
-              value: SheetsViewProvider(),
-            ),
-            ChangeNotifierProvider.value(
-              value: BgColorProvider(),
-            ),
             ChangeNotifierProvider.value(
               value: PenEraserProvider(),
             ),

@@ -69,7 +69,7 @@ class _PenPropertiesState extends State<PenProperties> {
               color: brushColor,
             ),
             title: Text(
-              'Color Selection',
+              'Color',
               style: popupTextStyle,
             ),
             onTap: () {
@@ -79,7 +79,7 @@ class _PenPropertiesState extends State<PenProperties> {
                   return AlertDialog(
                     contentPadding: const EdgeInsets.all(3.0),
                     title: Text(
-                      "Color Selection",
+                      "Pallete",
                     ),
                     content: MaterialColorPicker(
                       colors: fullMaterialColors,

@@ -29,6 +29,7 @@ PODS:
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
+  - Flutter (1.0.0)
   - GoogleAppMeasurement (7.9.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
     - GoogleUtilities/MethodSwizzler (~> 7.0)
@@ -67,6 +68,7 @@ PODS:
 
 DEPENDENCIES:
   - Firebase/Analytics
+  - Flutter (from `Flutter`)
 
 SPEC REPOS:
   trunk:
@@ -81,18 +83,23 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
 
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+
 SPEC CHECKSUMS:
   Firebase: d8bd6bd34b4c7ed57bfdd056c66ff5adcdde53ab
   FirebaseAnalytics: 31b1269830dfe16687db3c60b76082c12bd6d527
   FirebaseCore: 0798738ad1ae0fda67e17c7b9081241c431c6859
   FirebaseCoreDiagnostics: 3d36e05da74cb8b7ce30e6594a8f201b982c725c
   FirebaseInstallations: 5e777e6640fa060405cc7632447b6c5ca5af4742
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   GoogleAppMeasurement: 120eec8803fe65a4a7475fb3d3d59a61d0e1a866
   GoogleDataTransport: 8b0e733ea77c9218778e5a9e34ba9508b8328939
   GoogleUtilities: e1d9ed4e544fc32a93e00e721400cbc3f377200d
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
 
-PODFILE CHECKSUM: c4ddcc840c02f0e19c011bf807908869f58e52c0
+PODFILE CHECKSUM: 83a007a0e0e688fb53bf2e6f32521c9521f99e37
 
 COCOAPODS: 1.10.1
